@@ -23,6 +23,7 @@ interface WikiLinkData extends Data {
   exists: boolean | null;
   permalink: string;
   alias: string;
+  hName?: string;
   hProperties?: WikiLinkHProperties;
   hChildren?: ElementContent[];
 }
@@ -76,7 +77,7 @@ function fromMarkdown(opts: FromMarkdownOptions = {}) {
   function exitWikiLinkTarget(this: CompileContext, token: Token) {
     const target = this.sliceSerialize(token);
     const current = this.stack[this.stack.length - 1];
-    current.value = target;
+    (current as WikiLinkNode).value = target;
   }
 
   function exitWikiLink(this: CompileContext, token: Token) {
