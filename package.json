@@ -39,9 +39,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
-    "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/preset-env": "^7.12.1",
-    "@babel/register": "^7.12.1",
     "@types/jest": "^29.5.3",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
@@ -61,7 +59,6 @@
     "unist-util-visit": "^2.0.3"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.1",
     "@types/estree": "^1.0.5",
     "mdast-util-to-markdown": "^0.6.5"
   }
