@@ -11,7 +11,7 @@ declare module 'mdast-util-to-markdown/lib/util/safe' {
     compilePattern: (pattern: any) => RegExp; // Define more specific type if available
   }
 
-  const safe: (state: State, input: string | null | undefined, config: SafeConfig) => string
+  const safe: (state: State, input: string | null | undefined, config: SafeConfig) => string;
 
-  export default safe
+  export default safe;
 }
