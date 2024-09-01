@@ -1,40 +1,5 @@
-import { type CompileContext, type Token } from 'mdast-util-from-markdown';
-import { Parent, Data } from 'unist';
-import type { ElementContent } from 'hast';
-
-export interface FromMarkdownOptions {
-  permalinks?: string[];
-  pageResolver?: (name: string) => string[];
-  newClassName?: string;
-  wikiLinkClassName?: string;
-  hrefTemplate?: (permalink: string) => string;
-}
-
-type WikiLinkElementContent = ElementContent & {
-  value: string;
-};
-
-interface WikiLinkHProperties {
-  className: string;
-  href: string;
-  [key: string]: unknown;
-}
-
-interface WikiLinkData extends Data {
-  exists: boolean | null;
-  permalink: string;
-  alias: string;
-  hName?: string;
-  hProperties?: WikiLinkHProperties;
-  hChildren?: WikiLinkElementContent[];
-}
-
-export interface WikiLinkNode extends Parent {
-  type: 'wikiLink';
-  data: WikiLinkData;
-  value: string;
-}
-
+import type { CompileContext, Token, Extension } from 'mdast-util-from-markdown';
+import { FromMarkdownOptions, WikiLinkNode } from './types.js';
 declare module 'mdast' {
   interface RootContentMap {
     wikiLink: WikiLinkNode;
@@ -45,7 +10,7 @@ declare module 'mdast' {
   }
 }
 
-function fromMarkdown(opts: FromMarkdownOptions = {}) {
+function fromMarkdown(opts: FromMarkdownOptions = {}): Extension {
   const permalinks = opts.permalinks ?? [];
   const defaultPageResolver = (name: string) => [name.replace(/ /g, '_').toLowerCase()];
   const pageResolver = opts.pageResolver ?? defaultPageResolver;
@@ -132,7 +97,7 @@ function fromMarkdown(opts: FromMarkdownOptions = {}) {
       wikiLinkAlias: exitWikiLinkAlias,
       wikiLink: exitWikiLink,
     },
-  };
+  } as Extension;
 }
 
 export { fromMarkdown };

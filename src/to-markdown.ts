@@ -1,10 +1,7 @@
-import { State, Handle, Options, Unsafe } from 'mdast-util-to-markdown';
+import { State, Handle, Options, Unsafe, ConstructName } from 'mdast-util-to-markdown';
 import {Node, Parent} from 'unist'
-import { WikiLinkNode } from './from-markdown.js';
-
-interface ToMarkdownOptions {
-  aliasDivider?: string;
-}
+import { WikiLinkNode } from './types.js';
+import { ToMarkdownOptions } from './types.js';
 
 declare module 'mdast-util-to-markdown' {
   interface ConstructNameMap {
@@ -15,19 +12,19 @@ declare module 'mdast-util-to-markdown' {
 function toMarkdown(opts: ToMarkdownOptions = {}) : Options {
   const aliasDivider = opts.aliasDivider ?? ':';
 
-  const unsafe: Unsafe[] = [
+  const unsafe = [
     {
       character: '[',
-      inConstruct: ['phrasing', 'label', 'reference'],
+      inConstruct: ['phrasing', 'label', 'reference'] as ConstructName[],
     },
     {
       character: ']',
-      inConstruct: ['label', 'reference'],
+      inConstruct: ['label', 'reference'] as ConstructName[],
     },
-  ];
+  ] satisfies Unsafe[];
 
   const handler: Handle = function handler(node: Node, _parent: Parent | null | undefined, state: State) {
-    const exit = state.enter('wikiLink');
+    const exit = state.enter('wikiLink' as ConstructName);
 
     const wikiLink = node as WikiLinkNode;
     const nodeValue = state.safe(wikiLink.value, { before: '[', after: ']' });
