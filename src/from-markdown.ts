@@ -2,7 +2,7 @@ import { type CompileContext, type Token } from 'mdast-util-from-markdown';
 import { Parent, Data } from 'unist';
 import type { ElementContent } from 'hast';
 
-interface FromMarkdownOptions {
+export interface FromMarkdownOptions {
   permalinks?: string[];
   pageResolver?: (name: string) => string[];
   newClassName?: string;
