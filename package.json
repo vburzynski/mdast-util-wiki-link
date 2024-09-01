@@ -33,11 +33,12 @@
   "scripts": {
     "build": "tsc --build --clean && tsc --build",
     "prepare": "npm run build",
-    "lint": "eslint src/",
+    "lint": "eslint {src,test}/",
     "test": "mocha",
     "prettier": "npx prettier --write ./{src,test}"
   },
   "devDependencies": {
+    "@types/mocha": "^10.0.7",
     "@types/node": "^22.5.1",
     "eslint": "^9.9.1",
     "eslint-config-prettier": "^9.1.0",

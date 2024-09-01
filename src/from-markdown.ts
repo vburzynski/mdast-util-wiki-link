@@ -1,9 +1,6 @@
-import {
-  type CompileContext,
-  type Token,
-} from "mdast-util-from-markdown";
-import { Node, Data } from 'unist';
-import type {ElementContent} from 'hast';
+import { type CompileContext, type Token } from 'mdast-util-from-markdown';
+import { Parent, Data } from 'unist';
+import type { ElementContent } from 'hast';
 
 interface FromMarkdownOptions {
   permalinks?: string[];
@@ -12,6 +9,10 @@ interface FromMarkdownOptions {
   wikiLinkClassName?: string;
   hrefTemplate?: (permalink: string) => string;
 }
+
+type WikiLinkElementContent = ElementContent & {
+  value: string;
+};
 
 interface WikiLinkHProperties {
   className: string;
@@ -25,10 +26,10 @@ interface WikiLinkData extends Data {
   alias: string;
   hName?: string;
   hProperties?: WikiLinkHProperties;
-  hChildren?: ElementContent[];
+  hChildren?: WikiLinkElementContent[];
 }
 
-export interface WikiLinkNode extends Node {
+export interface WikiLinkNode extends Parent {
   type: 'wikiLink';
   data: WikiLinkData;
   value: string;
@@ -37,7 +38,6 @@ export interface WikiLinkNode extends Node {
 declare module 'mdast' {
   interface RootContentMap {
     wikiLink: WikiLinkNode;
-
   }
 
   interface PhrasingContentMap {
@@ -64,6 +64,7 @@ function fromMarkdown(opts: FromMarkdownOptions = {}) {
         permalink: '',
         exists: null,
       },
+      children: [],
     };
     this.enter(node, token);
   }

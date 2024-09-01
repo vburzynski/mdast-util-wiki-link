@@ -1,4 +1,4 @@
-import { State, Handle } from 'mdast-util-to-markdown';
+import { State, Handle, Options, Unsafe } from 'mdast-util-to-markdown';
 import {Node, Parent} from 'unist'
 import { WikiLinkNode } from './from-markdown.js';
 
@@ -12,10 +12,10 @@ declare module 'mdast-util-to-markdown' {
   }
 }
 
-function toMarkdown(opts: ToMarkdownOptions = {}) {
+function toMarkdown(opts: ToMarkdownOptions = {}) : Options {
   const aliasDivider = opts.aliasDivider ?? ':';
 
-  const unsafe = [
+  const unsafe: Unsafe[] = [
     {
       character: '[',
       inConstruct: ['phrasing', 'label', 'reference'],

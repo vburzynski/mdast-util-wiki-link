@@ -1,20 +1,12 @@
 import assert from 'assert';
 import { describe, test } from 'mocha';
-
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { toMarkdown } from 'mdast-util-to-markdown';
 import { visit } from 'unist-util-visit';
-
 import { syntax } from 'micromark-extension-wiki-link';
 
-import * as wikiLink from '../src';
-import { WikiLinkNode } from '../src/from-markdown';
-
-function assertWikiLink(obj: Node): asserts obj is WikiLinkNode {
-  if (!obj.data || obj.data.exists === undefined || obj.data.permalink === undefined) {
-    throw new Error('Not a wiki link');
-  }
-}
+import * as wikiLink from '../src/index.js';
+import { WikiLinkNode } from '../src/from-markdown.js';
 
 describe('mdast-util-wiki-link', () => {
   describe('fromMarkdown', () => {
@@ -28,15 +20,17 @@ describe('mdast-util-wiki-link', () => {
         ],
       });
 
-      visit(ast, 'wikiLink', (node: Node) => {
-        assertWikiLink(node);
+      let visited = false;
+      visit(ast, 'wikiLink', (node: WikiLinkNode) => {
+        visited = true;
         assert.equal(node.data.exists, true);
         assert.equal(node.data.permalink, 'wiki_link');
         assert.equal(node.data.hName, 'a');
-        assert.equal(node.data.hProperties.className, 'internal');
-        assert.equal(node.data.hProperties.href, '#/page/wiki_link');
-        assert.equal(node.data.hChildren[0].value, 'Wiki Link');
+        assert.equal(node.data.hProperties?.className, 'internal');
+        assert.equal(node.data.hProperties?.href, '#/page/wiki_link');
+        assert.equal(node.data.hChildren?.[0].value, 'Wiki Link');
       });
+      assert.equal(visited, true);
     });
 
     test('parses a wiki link that has no matching permalink', () => {
@@ -49,15 +43,17 @@ describe('mdast-util-wiki-link', () => {
         ],
       });
 
-      visit(ast, 'wikiLink', (node: Node) => {
-        assertWikiLink(node);
+      let visited = false
+      visit(ast, 'wikiLink', (node: WikiLinkNode) => {
+        visited = true;
         assert.equal(node.data.exists, false);
         assert.equal(node.data.permalink, 'new_page');
         assert.equal(node.data.hName, 'a');
-        assert.equal(node.data.hProperties.className, 'internal new');
-        assert.equal(node.data.hProperties.href, '#/page/new_page');
-        assert.equal(node.data.hChildren[0].value, 'New Page');
+        assert.equal(node.data.hProperties?.className, 'internal new');
+        assert.equal(node.data.hProperties?.href, '#/page/new_page');
+        assert.equal(node.data.hChildren?.[0].value, 'New Page');
       });
+      assert.equal(visited, true);
     });
 
     test('handles wiki links with aliases', () => {
@@ -70,17 +66,19 @@ describe('mdast-util-wiki-link', () => {
         ],
       });
 
-      visit(ast, 'wikiLink', (node: Node) => {
-        assertWikiLink(node);
+      let visited = false;
+      visit(ast, 'wikiLink', (node: WikiLinkNode) => {
+        visited = true;
         assert.equal(node.data.exists, false);
         assert.equal(node.data.permalink, 'real_page');
         assert.equal(node.data.hName, 'a');
         assert.equal(node.data.alias, 'Page Alias');
         assert.equal(node.value, 'Real Page');
-        assert.equal(node.data.hProperties.className, 'internal new');
-        assert.equal(node.data.hProperties.href, '#/page/real_page');
-        assert.equal(node.data.hChildren[0].value, 'Page Alias');
+        assert.equal(node.data.hProperties?.className, 'internal new');
+        assert.equal(node.data.hProperties?.href, '#/page/real_page');
+        assert.equal(node.data.hChildren?.[0].value, 'Page Alias');
       });
+      assert.equal(visited, true);
     });
 
     describe('configuration options', () => {
@@ -97,12 +95,14 @@ describe('mdast-util-wiki-link', () => {
           ],
         });
 
-        visit(ast, 'wikiLink', (node: Node) => {
-          assertWikiLink(node);
+        let visited = false;
+        visit(ast, 'wikiLink', (node: WikiLinkNode) => {
+          visited = true;
           assert.equal(node.data.exists, true);
           assert.equal(node.data.permalink, 'A Page');
-          assert.equal(node.data.hProperties.href, '#/page/A Page');
+          assert.equal(node.data.hProperties?.href, '#/page/A Page');
         });
+        assert.equal(visited, true);
       });
 
       test('uses newClassName', () => {
@@ -115,10 +115,12 @@ describe('mdast-util-wiki-link', () => {
           ],
         });
 
-        visit(ast, 'wikiLink', (node: Node) => {
-          assertWikiLink(node);
-          assert.equal(node.data.hProperties.className, 'internal new_page');
+        let visited = false;
+        visit(ast, 'wikiLink', (node: WikiLinkNode) => {
+          visited = true;
+          assert.equal(node.data.hProperties?.className, 'internal new_page');
         });
+        assert.equal(visited, true);
       });
 
       test('uses hrefTemplate', () => {
@@ -126,15 +128,17 @@ describe('mdast-util-wiki-link', () => {
           extensions: [syntax()],
           mdastExtensions: [
             wikiLink.fromMarkdown({
-              hrefTemplate: (permalink: string | undefined) => permalink || '',
+              hrefTemplate: (permalink: string | undefined) => permalink ?? '',
             }),
           ],
         });
 
-        visit(ast, 'wikiLink', (node: Node) => {
-          assertWikiLink(node);
-          assert.equal(node.data.hProperties.href, 'a_page');
+        let visited = false;
+        visit(ast, 'wikiLink', (node: WikiLinkNode) => {
+          visited = true;
+          assert.equal(node.data.hProperties?.href, 'a_page');
         });
+        assert.equal(visited, true);
       });
 
       test('uses wikiLinkClassName', () => {
@@ -148,10 +152,12 @@ describe('mdast-util-wiki-link', () => {
           ],
         });
 
-        visit(ast, 'wikiLink', (node: Node) => {
-          assertWikiLink(node);
-          assert.equal(node.data.hProperties.className, 'wiki_link');
+        let visited = false;
+        visit(ast, 'wikiLink', (node: WikiLinkNode) => {
+          visited = true;
+          assert.equal(node.data.hProperties?.className, 'wiki_link');
         });
+        assert.equal(visited, true);
       });
     });
   });
