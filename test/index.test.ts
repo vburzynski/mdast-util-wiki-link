@@ -3,7 +3,7 @@ import assert from 'assert'
 import { fromMarkdown } from 'mdast-util-from-markdown'
 import toMarkdown from 'mdast-util-to-markdown'
 import visit from 'unist-util-visit'
-import {Node, Data} from 'unist'
+import { Node, Data } from 'unist'
 
 import { syntax } from 'micromark-extension-wiki-link'
 
@@ -18,7 +18,7 @@ interface WikiLinkHProperties {
 interface WikiLinkData extends Data {
   exists: boolean;
   permalink: string;
-  hProperties: WikiLinkHProperties; 
+  hProperties: WikiLinkHProperties;
   hChildren: Array<{value: string}>
 }
 
