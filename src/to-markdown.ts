@@ -1,11 +1,14 @@
-import safe from 'mdast-util-to-markdown/lib/util/safe';
+import { Context, Handle } from 'mdast-util-to-markdown';
+import safe from 'mdast-util-to-markdown/lib/util/safe.js';
+import {Node, Parent} from 'unist'
+import { WikiLinkNode } from './from-markdown.js';
 
 interface ToMarkdownOptions {
   aliasDivider?: string;
 }
 
 function toMarkdown(opts: ToMarkdownOptions = {}) {
-  const aliasDivider = opts.aliasDivider || ':';
+  const aliasDivider = opts.aliasDivider ?? ':';
 
   const unsafe = [
     {
@@ -18,11 +21,12 @@ function toMarkdown(opts: ToMarkdownOptions = {}) {
     },
   ];
 
-  function handler(node: any, _: any, context: any) {
+  const handler: Handle = function handler(node: Node, _parent: Parent | null | undefined, context: Context) {
     const exit = context.enter('wikiLink');
 
-    const nodeValue = safe(context, node.value, { before: '[', after: ']' });
-    const nodeAlias = safe(context, node.data.alias, { before: '[', after: ']' });
+    const wikiLink = node as WikiLinkNode;
+    const nodeValue = safe(context, wikiLink.value, { before: '[', after: ']' });
+    const nodeAlias = safe(context, wikiLink.data.alias, { before: '[', after: ']' });
 
     let value;
     if (nodeAlias !== nodeValue) {

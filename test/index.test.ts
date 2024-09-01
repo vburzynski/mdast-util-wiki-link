@@ -4,28 +4,11 @@ import { describe, test } from 'mocha';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import toMarkdown from 'mdast-util-to-markdown';
 import visit from 'unist-util-visit';
-import { Node, Data } from 'unist';
 
 import { syntax } from 'micromark-extension-wiki-link';
 
 import * as wikiLink from '../src';
-
-interface WikiLinkHProperties {
-  className: string;
-  href: string;
-  [key: string]: unknown;
-}
-
-interface WikiLinkData extends Data {
-  exists: boolean;
-  permalink: string;
-  hProperties: WikiLinkHProperties;
-  hChildren: Array<{ value: string }>;
-}
-
-interface WikiLinkNode extends Node {
-  data: WikiLinkData;
-}
+import { WikiLinkNode } from '../src/from-markdown';
 
 function assertWikiLink(obj: Node): asserts obj is WikiLinkNode {
   if (!obj.data || obj.data.exists === undefined || obj.data.permalink === undefined) {

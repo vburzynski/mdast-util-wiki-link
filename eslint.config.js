@@ -7,9 +7,8 @@ export default tseslint.config(
     ignores: ['dist/*'],
   },
   eslint.configs.recommended,
-  ...tseslint.configs.recommended,
-  // ...tseslint.configs.recommendedTypeChecked,
-  // ...tseslint.configs.stylisticTypeChecked,
+  ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.stylisticTypeChecked,
   {
     languageOptions: {
       parserOptions: {
@@ -18,6 +17,7 @@ export default tseslint.config(
       },
     },
   },
+  eslintConfigPrettier,
   {
     "rules": {
       "@typescript-eslint/no-unused-vars": [
